@@ -25,6 +25,8 @@ Wir nutzen hier Jazzy, da die verwendeten ROS2-Pakete unter Jazzy getestet sind.
 
 ### Vorbereitung
 
+#### System Einstellungen
+
 Zuerst gehen wir sicher, dass unser Ubuntu System UTF-8 nutzt. Das ist wichtig für die Zeichenkodierung in z.B. Pfaden, Zeichenketten oder Meldungen. Sonst kann es zu Zeichenfehlern, Encoding-Problemen oder Programmfehlern kommen.
 
 Mit <kbd>STRG</kbd> + <kbd>ALT</kbd> + <kbd>T</kbd> rufen wir ein neues Terminal auf.
@@ -46,7 +48,14 @@ sicherstellen.
 
 Mit `locale` überprüfen wir erneut die aktuelle Einstellung.
 
+#### Erforderliche Verzeichnisse aktivieren
 
+Zuerst gehen wir sicher, dass das Ubuntu Universe [Verzeichnis](https://help.ubuntu.com/community/Repositories/Ubuntu) (Ubuntu Dokumentation: Repositories) aktiviert ist.
+
+```bash
+sudo apt install software-properties-common
+sudo add-apt-repository universe
+```
 
 ## Igus-Rebel Roboterarm Installation
 
