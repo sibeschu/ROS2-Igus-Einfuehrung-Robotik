@@ -9,7 +9,7 @@
 ## ROS2 Installation
 
 ### Versionen
-Für Ubuntu Noble (24.04) gibt es [Debian Pakete](https://de.wikipedia.org/wiki/Debian-Paket) für ROS2 Jazzy Jalisco.
+Für Ubuntu Noble (24.04) gibt es [Debian Pakete](https://de.wikipedia.org/wiki/Debian-Paket)(Wikipedia) für ROS2 Jazzy Jalisco.
 
 Im Gegensatz zu Windows wird hier keine .exe-Datei runtergeladen und ausgeführt sondern das Programm über eine einfache Terminal-Eingabe installiert.
 
