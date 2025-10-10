@@ -4,6 +4,20 @@ TODO:
 
 # Einführung in die Robotik mit dem Igus-Rebel und ROS2
 
+## Schnell-Installation
+
+``bash
+git clone --recurse-submodules https://github.com/sibeschu/ROS2-Igus-Einfuehrung-Robotik
+```
+
+oder
+
+```bash
+git clone https://github.com/sibeschu/ROS2-Igus-Einfuehrung-Robotik
+cd ROS2-Igus-Einfuehrung-Robotik
+git submodule update --init --recursive
+```
+
 ## Inhaltsverzeichnis
 
 - [Grundwissen](#grundwissen)
