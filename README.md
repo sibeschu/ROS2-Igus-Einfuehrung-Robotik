@@ -152,8 +152,6 @@ Unsere Ordnerstruktur sollte jetzt so aussehen:
 ORDNERSTRUKTUR
 ## Igus-Rebel Roboterarm Installation
 
-## Schritt 1
-
 Das ROS2 Paket für den Igus Rebel von Truphysics kann momentan nur genutzt werden indem es "from source" gebaut wird.
 
 ```bash
