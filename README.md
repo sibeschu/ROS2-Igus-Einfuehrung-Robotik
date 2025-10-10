@@ -6,7 +6,7 @@ TODO:
 
 ## Schnell-Installation
 
-```bash
+``bash
 git clone --recurse-submodules https://github.com/sibeschu/ROS2-Igus-Einfuehrung-Robotik
 ```
 
@@ -223,3 +223,72 @@ ros2 run igus_rebel_moveit_config rebel_servo_teleop_keyboard
 Um den TCP (Tool Center Point) im "World Frame" zu steuern, benutzen wir <KBD>W</KBD> und <KBD>T</KBD>. Dann nutzen wir <KBD>.</KBD> und <KBD>;</KBD>, um den TCP vorwärts, rückwärts, nach links, nach rechts, nach unten,oder nach oben zu bewegen.
 
 ## RealSense Kamera Installation
+## Schritt 1
+### librealsense2 / Intel RealSense SDK 2.0 installieren
+
+`sudo apt install ros-jazzy-librealsense2*` ---> NICHT GETESTET ! ! !
+
+Alternative:
+
+Zuerst registrieren wir den "server's public key":
+
+```bash
+sudo mkdir -p /etc/apt/keyrings
+curl -sSf https://librealsense.intel.com/Debian/librealsense.pgp | sudo tee /etc/apt/keyrings/librealsense.pgp > /dev/null
+```
+
+Dann stellen wir sicher, dass "apt HTTPS support" installiert ist:
+
+```bash
+sudo apt-get install apt-transport-https
+```
+
+Nun fügen wir den Server zu unserer Liste der Repositories hinzu:
+
+```bash
+echo "deb [signed-by=/etc/apt/keyrings/librealsense.pgp] https://librealsense.intel.com/Debian/apt-repo `lsb_release -cs` main" | \
+sudo tee /etc/apt/sources.list.d/librealsense.list
+sudo apt-get update
+```
+
+Wir installieren die librealsense2-Pakete mit:
+
+```bash
+sudo apt-get install librealsense2-dkms
+sudo apt-get install librealsense2-utils
+sudo apt-get install librealsense2-dev
+```
+
+Wir können die Installation mit `realsense-viewer` überprüfen.
+Um sicherzugehen, dass der "Kernel" aktualisiert wurde können wir `modinfo uvcvideo | grep "version:"`verwenden. Dies sollte dann `realsense`enthalten.
+
+### ROS2 RealSense installieren
+Option 1 Debian Package:
+
+Alle RealSense-ROS2-Pakete installieren mit
+```bash
+sudo apt install ros-jazzy-realsense2-*
+```
+
+Option 2 "from source":
+
+Im src-Ordner des Workspace
+```bash
+git clone https://github.com/IntelRealSense/realsense-ros.git -b ros2-master
+cd ..
+
+### Install dependencies with
+sudo apt-get install python3-rosdep -y
+sudo rosdep init # "sudo rosdep init --include-eol-distros" for Foxy and earlier
+rosdep update # "sudo rosdep update --include-eol-distros" for Foxy and earlier
+rosdep install -i --from-path src --rosdistro $ROS_DISTRO --skip-keys=librealsense2 -y
+
+### Build with
+colcon build
+
+### Source environment
+ROS_DISTRO=Jazzy
+source /opt/ros/Jazzy/setup.bash
+cd ~/ROS2-Igus-Einfuehrung-Robotik
+. install/local_setup.bash
+```
