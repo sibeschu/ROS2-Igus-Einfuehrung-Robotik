@@ -1,8 +1,13 @@
+TODO:
+  - PLATZHALTER mit meinem Git Repository ersetzen, zum füllen des src-Ordners.
+  - ORDNERSTRUKTUR mit Ordnerstruktur nach Installation colcon und erstem Mal bauen ersetzen.
+
 # Einführung in die Robotik mit dem Igus-Rebel und ROS2
 
 ## Inhaltsverzeichnis
 
 - [Grundwissen](#grundwissen)
+- [Anlegen eines eigenen Workspaces](#anlegen-eines-eigenen-workspaces)
 - [ROS2 Installation](#ros2-installation)
 - [Igus Installation](#igus-rebel-roboterarm-installation)
 - [Kamera Installation](#realsense-kamera-installation)
@@ -109,8 +114,45 @@ Wir sollten in diesem zweiten Terminal nun Nachrichten wie diese sehen:
 [INFO] [1760010765.584406703] [listener]: I heard: [Hello World: 6]
 ```
 
+Falls es zu Problemen kommt oder etwas nicht funktioniert kann die offizielle Dokumentation helfen: [Jazzy Jalisco Installation](https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debs.html)
 
+## Anlegen eines eigenen Workspaces
 
+Da wir mit unser Projekt mit Colcon bauen wollen, müssen wir dies auch installieren mit:
+
+```bash
+sudo apt install python3-colcon-common-extensions
+```
+
+Nun legen wir unseren eigenen ROS2 Workspace an. Dafür geben wir ein:
+(Wir befinden uns im ~/ Ordner)
+```bash
+mkdir -p ~/ros2_ws/src
+```
+
+mit `cd ~/ros2_ws/src` wechseln wir in das neu angelegte Verzeichnis.
+
+Jetzt wollen wir unseren src-Ordner mit den entsprechenden Repositories füllen.
+Dafür nutzen wir
+```bash
+git clone PLATZHALTER
+```
+
+```bash
+cd ~/ros2_ws
+```
+
+Wir bauen unseren Workspace, aus dem Workspace-Ordner heraus, mit
+```bash
+colcon build --symlink-install
+```
+
+Unsere Ordnerstruktur sollte jetzt so aussehen:
+
+ORDNERSTRUKTUR
 ## Igus-Rebel Roboterarm Installation
+
+
+
 
 ## RealSense Kamera Installation
