@@ -6,7 +6,7 @@ TODO:
 
 ## Schnell-Installation
 
-``bash
+```bash
 git clone --recurse-submodules https://github.com/sibeschu/ROS2-Igus-Einfuehrung-Robotik
 ```
 
