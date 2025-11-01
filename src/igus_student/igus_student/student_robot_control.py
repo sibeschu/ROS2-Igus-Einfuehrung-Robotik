@@ -2,7 +2,6 @@
 """
 ═══════════════════════════════════════════════════════════════════════════
     IGUS REBEL - Student Robot Control Template
-    Hochschule Karlsruhe - Einführung Robotik
 ═══════════════════════════════════════════════════════════════════════════
 
 VERWENDUNG:
@@ -81,9 +80,9 @@ class RobotController(Node):
         )
         
         # Warte auf MoveGroup Server
-        self.get_logger().info("⏳ Warte auf MoveGroup Server...")
+        self.get_logger().info("Warte auf MoveGroup Server...")
         if not self.client.wait_for_server(timeout_sec=10.0):
-            self.get_logger().error("❌ MoveGroup Server nicht erreichbar!")
+            self.get_logger().error("MoveGroup Server nicht erreichbar!")
             raise RuntimeError("MoveGroup Server nicht verfügbar")
         
         self.get_logger().info("✓ Verbunden mit MoveGroup!")
@@ -139,8 +138,8 @@ class RobotController(Node):
         Returns:
             bool: True bei Erfolg, False bei Fehler
         """
-        self.get_logger().info(f"🎯 Ziel: ({x:.3f}, {y:.3f}, {z:.3f})")
-        self.get_logger().info(f"   Rotation: roll={roll:.2f}, pitch={pitch:.2f}, yaw={yaw:.2f}")
+        self.get_logger().info(f"Ziel: ({x:.3f}, {y:.3f}, {z:.3f})")
+        self.get_logger().info(f"Rotation: roll={roll:.2f}, pitch={pitch:.2f}, yaw={yaw:.2f}")
         
         # 1) Konvertiere Euler zu Quaternion
         qw, qx, qy, qz = self._euler_to_quaternion(roll, pitch, yaw)
@@ -174,16 +173,16 @@ class RobotController(Node):
         )
         
         # 7) Sende Goal an MoveGroup
-        self.get_logger().info("📤 Sende Goal an MoveGroup...")
+        self.get_logger().info("Sende Goal an MoveGroup...")
         send_future = self.client.send_goal_async(move_group_goal)
         rclpy.spin_until_future_complete(self, send_future)
         
         goal_handle = send_future.result()
         if not goal_handle.accepted:
-            self.get_logger().error("❌ Goal wurde abgelehnt!")
+            self.get_logger().error("Goal wurde abgelehnt!")
             return False
         
-        self.get_logger().info("⏳ Warte auf Ausführung...")
+        self.get_logger().info("Warte auf Ausführung...")
         
         # 8) Warte auf Ergebnis
         result_future = goal_handle.get_result_async()
@@ -194,9 +193,9 @@ class RobotController(Node):
         success = (result.error_code.val == 1)
         
         if success:
-            self.get_logger().info("✅ Bewegung erfolgreich!")
+            self.get_logger().info("Bewegung erfolgreich!")
         else:
-            self.get_logger().error(f"❌ Fehler! Error Code: {result.error_code.val}")
+            self.get_logger().error(f"Fehler! Error Code: {result.error_code.val}")
         
         return success
 
@@ -245,7 +244,7 @@ def move_to_home():
     Returns:
         bool: True bei Erfolg, False bei Fehler
     """
-    print("🏠 Fahre zur Home-Position...")
+    print("Fahre zur Home-Position...")
     x, y, z = HOME_POSITION
     roll, pitch, yaw = HOME_ORIENTATION
     return move_to_pose(x, y, z, roll, pitch, yaw)
@@ -309,7 +308,6 @@ def main():
     
     print("\n" + "═" * 70)
     print("  IGUS REBEL - STUDENT ROBOT CONTROL")
-    print("  Hochschule Karlsruhe")
     print("═" * 70 + "\n")
     
     # ROS2 initialisieren
@@ -323,9 +321,9 @@ def main():
         student_program()
         
     except KeyboardInterrupt:
-        print("\n⚠️  Programm durch Benutzer gestoppt (Ctrl+C)\n")
+        print("\nProgramm durch Benutzer gestoppt (Ctrl+C)\n")
     except Exception as e:
-        print(f"\n❌ Fehler: {str(e)}\n")
+        print(f"\nFehler: {str(e)}\n")
         import traceback
         traceback.print_exc()
     finally:
