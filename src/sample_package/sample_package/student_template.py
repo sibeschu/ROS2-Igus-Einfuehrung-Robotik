@@ -38,9 +38,10 @@ KOORDINATENSYSTEM:
 import rclpy
 from rclpy.node import Node
 from rclpy.action import ActionClient
+from rclpy.time import Time
 from geometry_msgs.msg import PoseStamped
 from moveit_msgs.action import MoveGroup
-from moveit_msgs.msg import Constraints, JointConstraint, PositionConstraint, OrientationConstraint
+from moveit_msgs.msg import Constraints, JointConstraint, PositionConstraint, OrientationConstraint, WorkspaceParameters
 from shape_msgs.msg import SolidPrimitive
 from scipy.spatial.transform import Rotation
 from math import pi
@@ -138,13 +139,24 @@ class StudentRobot(Node):
         joint_names = ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6']
         joint_values = [0.0, -pi/6, pi/3, 0.0, pi/6, 0.0]
         
-        # Erstelle MoveGroup Goal
+        # Erstelle MoveGroup Goal mit Timestamps
         goal = MoveGroup.Goal()
         goal.request.group_name = self.planning_group
         goal.request.num_planning_attempts = 10
         goal.request.allowed_planning_time = 5.0
-        goal.request.max_velocity_scaling_factor = 0.1
+        goal.request.max_velocity_scaling_factor = 0.1  # Langsam für Sicherheit
         goal.request.max_acceleration_scaling_factor = 0.1
+        
+        # Setze Workspace-Grenzen
+        goal.request.workspace_parameters = WorkspaceParameters()
+        goal.request.workspace_parameters.header.stamp = self.get_clock().now().to_msg()
+        goal.request.workspace_parameters.header.frame_id = "base_link"
+        goal.request.workspace_parameters.min_corner.x = -1.0
+        goal.request.workspace_parameters.min_corner.y = -1.0
+        goal.request.workspace_parameters.min_corner.z = -1.0
+        goal.request.workspace_parameters.max_corner.x = 1.0
+        goal.request.workspace_parameters.max_corner.y = 1.0
+        goal.request.workspace_parameters.max_corner.z = 1.0
         
         # Setze Gelenkziele
         constraints = Constraints()
@@ -179,9 +191,10 @@ class StudentRobot(Node):
         self.get_logger().info(f"📍 Bewege zu: x={x:.3f}m, y={y:.3f}m, z={z:.3f}m")
         self.get_logger().info(f"   Orientierung: roll={roll:.2f}, pitch={pitch:.2f}, yaw={yaw:.2f}")
         
-        # Erstelle Ziel-Pose
+        # Erstelle Ziel-Pose mit Timestamp
         target = PoseStamped()
         target.header.frame_id = "base_link"
+        target.header.stamp = self.get_clock().now().to_msg()
         target.pose.position.x = x
         target.pose.position.y = y
         target.pose.position.z = z
@@ -192,13 +205,24 @@ class StudentRobot(Node):
         target.pose.orientation.z = q[2]
         target.pose.orientation.w = q[3]
         
-        # Erstelle MoveGroup Goal
+        # Erstelle MoveGroup Goal mit Timestamps
         goal = MoveGroup.Goal()
         goal.request.group_name = self.planning_group
         goal.request.num_planning_attempts = 10
         goal.request.allowed_planning_time = 5.0
-        goal.request.max_velocity_scaling_factor = 0.1
+        goal.request.max_velocity_scaling_factor = 0.1  # Langsam für Sicherheit
         goal.request.max_acceleration_scaling_factor = 0.1
+        
+        # Setze Workspace-Grenzen
+        goal.request.workspace_parameters = WorkspaceParameters()
+        goal.request.workspace_parameters.header.stamp = self.get_clock().now().to_msg()
+        goal.request.workspace_parameters.header.frame_id = "base_link"
+        goal.request.workspace_parameters.min_corner.x = -1.0
+        goal.request.workspace_parameters.min_corner.y = -1.0
+        goal.request.workspace_parameters.min_corner.z = -1.0
+        goal.request.workspace_parameters.max_corner.x = 1.0
+        goal.request.workspace_parameters.max_corner.y = 1.0
+        goal.request.workspace_parameters.max_corner.z = 1.0
         
         # Position Constraint
         pos_constraint = PositionConstraint()
