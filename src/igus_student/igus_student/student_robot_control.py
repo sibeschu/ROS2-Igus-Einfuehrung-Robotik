@@ -52,8 +52,8 @@ from math import pi
 PLANNING_GROUP = "igus_rebel_arm"
 ENDEFFECTOR_LINK = "link6"
 PLANNING_FRAME = "world"
-POSE_TOLERANCE_POSITION = 0.005      # 5 mm
-POSE_TOLERANCE_ROTATION = 0.02       # ~1.1 Grad
+POSE_TOLERANCE_POSITION = 0.01      # 10 mm
+POSE_TOLERANCE_ROTATION = 0.05       # ~3 Grad
 
 # Home Position (sicher, mittig)
 HOME_POSITION = (0.4, 0.0, 0.40)        # x, y, z in Metern
@@ -143,7 +143,7 @@ class RobotController(Node):
         
         # 1) Konvertiere Euler zu Quaternion
         qw, qx, qy, qz = self._euler_to_quaternion(roll, pitch, yaw)
-        
+      
         # 2) Erstelle Ziel-Pose
         goal_pose = PoseStamped()
         goal_pose.header.frame_id = PLANNING_FRAME

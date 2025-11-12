@@ -24,7 +24,7 @@ Diese wird festgelegt in `igus_rebel_ros2/src/igus_rebel/include/Rebel.hpp` (Zei
 
 ## Einstiegspunkte
 
-Sourcen des Workspaces vom root-Ordner:  
+Workspace "sourcen" vom root-Ordner:  
 
 `source install/setup.bash`
 
@@ -43,7 +43,24 @@ src/
 ```
 In `student_robot_control.py` können Anweisungen für den Igus geschrieben werden.  
 Mit `colcon build` im root-Ordner den Workspace erneut bauen, um Änderungen zu übernehmen.  
+Interface für den Igus mit `ros2 launch igus_rebel rebel.launch.py` staren.  
+MotionPlanningPipeline mit `ros2 launch igus_rebel_moveit_config igus_rebel_motion_planner.launch.py use_gui:=true`starten.  
 Ausführen mit `ros2 run igus_student student_robot_control`  
+
+```bash
+src
+├── sample_package
+│   ├── config
+│   │   └── moveitpy_config.yaml
+│   ├── launch
+│   │   └── roboter_template.launch.py
+│   ├── package.xml
+│   ├── resource
+│   │   └── sample_package
+│   ├── sample_package
+│   │   ├── __init__.py
+│   │   └── keyboard_move_sample.py
+```
 
 ## Dokumentationen und Sourcecode
 
@@ -51,3 +68,16 @@ Ausführen mit `ros2 run igus_student student_robot_control`
 - [igus_rebel_ros2](https://bitbucket.org/truphysics/igus_rebel_ros2/src/main/)
 - [realsense-ros](https://github.com/IntelRealSense/realsense-ros/tree/bafc21080c5c8e259dadbb309797949aee0dd950)
 - [yolo_ros](https://github.com/mgonzs13/yolo_ros/tree/ecdc718c8600b0c0744e32477cd121de55be5e30)
+
+## Bekannte Probleme
+
+- Motionplanner funktioniert nicht --> locales auf en_US ? 
+
+## NOT-AUS
+
+Nach Betätigen des NOT-Aus : 
+- NOT-Aus rausdrehen -> NOT-Aus deaktivieren
+- Robot Interface beenden mit `STRG + C`
+- Robot Interface neu starten mit `ros2 launch igus_rebel rebel.launch.py`
+- in Rviz eine sichere Position anfahren über den MotionPlanner
+  - Goal_State per Grafikoberfläche setzen oder Goal_State "home" auswählen und dann Plan & Execute 
