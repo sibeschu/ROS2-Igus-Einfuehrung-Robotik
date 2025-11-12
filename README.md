@@ -1,5 +1,10 @@
 # igus_ws - Einführung in die Robotik mit dem Igus-Rebel und ROS2
 
+## Voraussetzungen 
+
+- ROS2 Jazzy Jalisco
+- Ubuntu 24.04. LTS
+
 ## Installation
 
 ```bash
@@ -13,6 +18,17 @@ cd igus_ws
 source /opt/ros/jazzy/setup.bash
 colcon build
 ```
+
+## Einstiegspunkte
+
+```bash
+src/
+├── igus_student
+│   ├── igus_student
+│   │   ├── __init__.py
+│   │   └── student_robot_control.py
+```
+
 
 ## Dokumentationen und Sourcecode
 
