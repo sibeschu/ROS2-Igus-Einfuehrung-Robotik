@@ -39,10 +39,10 @@ src/
 ├── igus_student
 │   ├── igus_student
 │   │   ├── __init__.py
-│   │   └── student_robot_control.py
+│   │   └── simple_robot_control.py
 ```
-In `student_robot_control.py` können Anweisungen für den Igus geschrieben werden.  
-Mit `colcon build` im root-Ordner den Workspace erneut bauen, um Änderungen zu übernehmen.  
+In `simple_robot_control.py` können Anweisungen für den Igus geschrieben werden.  
+Mit `colcon build --packages-select igus_student` im root-Ordner den Workspace erneut bauen, um Änderungen zu übernehmen.  
 Interface für den Igus mit `ros2 launch igus_rebel rebel.launch.py` staren.  
 MotionPlanningPipeline mit `ros2 launch igus_rebel_moveit_config igus_rebel_motion_planner.launch.py use_gui:=true`starten.  
 Ausführen mit `ros2 run igus_student student_robot_control`  
@@ -61,6 +61,10 @@ src
 │   │   ├── __init__.py
 │   │   └── keyboard_move_sample.py
 ```
+Mit dem `keyboard_move_sample.py` kann erkundet werden, wie sich der Roboter über /delta_joint_cmd und /delta_twist/cmd steuern lässt.  
+- Interface starten mit `ros2 launch igus_rebel rebel.launch.py`
+- MotionPlanningPipeline starten mit `ros2 launch igus_rebel_moveit_config igus_rebel_motion_planner.launch.py`
+- `ros2 run sample_package keyboard_move_sample` startet das Programm 
 
 ## Dokumentationen und Sourcecode
 
@@ -72,6 +76,8 @@ src
 ## Bekannte Probleme
 
 - Motionplanner funktioniert nicht --> locales auf en_US ? 
+- Workspace nicht gesourced --> gut prüfbar mit `echo $ROS_DISTRO` (zeigt nicht was genau gesourced ist)
+- wenn Roboter bei Anweisung nur kurz zuckt und dann in den roten Error-Modus geht --> Roboter neu starten am Knopf
 
 ## NOT-AUS
 

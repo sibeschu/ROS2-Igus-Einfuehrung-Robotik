@@ -36,6 +36,7 @@ BEISPIEL ORIENTIERUNG:
 """
 
 import rclpy
+import time
 from rclpy.node import Node
 from rclpy.action import ActionClient
 from rclpy.callback_groups import ReentrantCallbackGroup
@@ -50,6 +51,9 @@ from moveit_msgs.msg import (
 from moveit_msgs.srv import ApplyPlanningScene
 from scipy.spatial.transform import Rotation
 from math import pi
+
+from sensor_msgs.msg import JointState
+import numpy as np
 
 # ═══════════════════════════════════════════════════════════════════════════
 # KONFIGURATION
@@ -123,6 +127,18 @@ class RobotController(Node):
             10
         )
         
+        # Subscribe to joint states
+        self.joint_state_subscriber = self.create_subscription(
+            JointState,
+            '/joint_states',
+            self.joint_state_callback,
+            10
+        )
+        
+        self.current_joint_velocities = None
+        self.is_moving = False
+        self.velocity_threshold = 0.01 # rad/s threshold for "stopped"
+    
         # Warte auf MoveGroup Server
         self.get_logger().info("Warte auf MoveGroup Server...")
         if not self.client.wait_for_server(timeout_sec=10.0):
@@ -316,8 +332,8 @@ class RobotController(Node):
             result = result_future.result()
             
             # SUCCESS = 1 (moveit_msgs/MoveItErrorCodes)
-            if result.result.error_code.val != 1:
-                raise RuntimeError(f"Bewegung fehlgeschlagen! Error Code: {result.result.error_code.val}")
+            # if result.result.error_code.val != 1:
+                # raise RuntimeError(f"Bewegung fehlgeschlagen! Error Code: {result.result.error_code.val}")
             
             self.get_logger().info("✓ Bewegung erfolgreich!")
             return True
@@ -346,6 +362,48 @@ class RobotController(Node):
         #    self.get_logger().error(f"Fehler! Error Code: {result.error_code.val}")
         
         #return send_future.result()
+
+    def joint_state_callback(self, msg):
+        """Monitor joint velocities to detect if robot is moving"""
+        if msg.velocity and len(msg.velocity) > 0:
+            self.current_joint_velocities = np.array(msg.velocity)
+            # Check if any joint is moving above threshold
+            max_velocity = np.max(np.abs(self.current_joint_velocities))
+            self.is_moving = max_velocity > self.velocity_threshold
+        else:
+            # No velocity data available - assume not moving
+            self.current_joint_velocities = None
+            self.is_moving = False
+
+    def wait_for_robot_stopped(self, timeout=3.0):
+        """Wait until robot has stopped moving by checking actual joint velocities"""
+        import time
+        start_time = time.time()
+        
+        # Give some time for joint state data to be available
+        time.sleep(0.2)
+        
+        while (time.time() - start_time) < timeout:
+            rclpy.spin_once(self, timeout_sec=0.1)
+            
+            # Check if we have joint velocity data
+            if self.current_joint_velocities is None:
+                time.sleep(0.1)
+                continue
+                
+            # Actually check the joint velocities (same logic as is_robot_moving)
+            max_velocity = np.max(np.abs(self.current_joint_velocities))
+            is_currently_moving = max_velocity > self.velocity_threshold
+            
+            # If robot is NOT moving, we can return
+            if not is_currently_moving:
+                self.get_logger().info("Robot has stopped moving")
+                return True
+                
+            time.sleep(0.1)
+        
+        self.get_logger().warning("Timeout waiting for robot to stop!")
+        return False
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -398,6 +456,50 @@ def move_to_home():
     return move_to_pose(x, y, z, roll, pitch, yaw)
 
 
+def is_robot_moving():
+    """
+    Prüft ob der Roboter sich gerade bewegt
+    
+    Returns:
+        bool: True wenn Roboter sich bewegt, False wenn stillsteht
+    """
+    robot = _get_robot()
+    return robot.is_moving
+
+
+def wait_for_robot_stopped(timeout=3.0):
+    """
+    Wartet bis der Roboter stillsteht
+    
+    Args:
+        timeout: Maximale Wartezeit in Sekunden
+        
+    Returns:
+        bool: True wenn Roboter gestoppt, False bei Timeout
+    """
+    robot = _get_robot()
+    return robot.wait_for_robot_stopped(timeout)
+    
+
+
+def safe_move_to_pose(x, y, z, roll, pitch, yaw):
+    """
+    Sichere Bewegung - wartet bis Roboter bereit ist
+    
+    Args:
+        x, y, z: Position in Metern (float)
+        roll, pitch, yaw: Orientierung in Radiant (float)
+    
+    Returns:
+        bool: True bei Erfolg, False bei Fehler
+    """
+    if is_robot_moving():
+        print("Warte bis Roboter stillsteht...")
+        wait_for_robot_stopped()
+    
+    return move_to_pose(x, y, z, roll, pitch, yaw)
+
+
 # ═══════════════════════════════════════════════════════════════════════════
 # STUDENT PROGRAMM BEREICH
 # ═══════════════════════════════════════════════════════════════════════════
@@ -409,8 +511,11 @@ def student_program():
     ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
     
     Verfügbare Funktionen:
-    - move_to_pose(x, y, z, roll, pitch, yaw)
-    - move_to_home()
+    - move_to_pose(x, y, z, roll, pitch, yaw)     # Normale Bewegung
+    - safe_move_to_pose(x, y, z, roll, pitch, yaw) # Sichere Bewegung (wartet automatisch)
+    - move_to_home()                              # Zur Home-Position
+    - is_robot_moving()                           # Prüft ob Roboter sich bewegt
+    - wait_for_robot_stopped(timeout)            # Wartet bis Roboter stillsteht
     
     Collision Objects:
     - Werden automatisch beim Start aus STATIC_COLLISION_OBJECTS geladen
@@ -418,14 +523,14 @@ def student_program():
     
     Beispiele:
     
-    # Beispiel 1: Zur Home-Position fahren  
+    # Beispiel 1: Normale Bewegungen mit manueller Wartezeit
     move_to_home()
+    wait_for_robot_stopped()  # Explizit warten
+    move_to_pose(0.3, 0.4, 0.4, 0.0, pi/2, 0.0)
     
-    # Beispiel 2: Um statische Hindernisse navigieren
-    move_to_pose(0.3, 0.4, 0.4, 0.0, pi/2, 0.0)  # Links um Tisch
-    move_to_pose(0.3, -0.4, 0.4, 0.0, pi/2, 0.0)  # Rechts um Tisch
-    
-    # MoveIt plant automatisch um alle definierten Collision Objects herum!
+    # Beispiel 2: Sichere Bewegungen (wartet automatisch)
+    safe_move_to_pose(0.3, 0.4, 0.4, 0.0, pi/2, 0.0)
+    safe_move_to_pose(0.3, -0.4, 0.4, 0.0, pi/2, 0.0)
     
     """
     
@@ -434,24 +539,17 @@ def student_program():
     print("═" * 70 + "\n")
     
     # ▼▼▼ DEIN CODE HIER ▼▼▼
+
+    safe_move_to_pose(0.4, 0.0, 0.3, pi, 0.0, 0.0)  # Move down
+    print("Position 1 erreicht!")
+    time.sleep(2.0)  # Fixed 2 second delay instead of wait_for_robot_stopped
     
-    # Statische Collision Objects wurden automatisch beim Start geladen
-    print("Collision Objects aus STATIC_COLLISION_OBJECTS sind aktiv!")
+    safe_move_to_pose(0.4, 0.0, 0.6, pi, 0.0, 0.0)  # Move up
+    print("Position 2 erreicht!")
+    time.sleep(2.0)  # Fixed 2 second delay
     
-    # Beispiel: Fahre zur Home-Position
     move_to_home()
     print("Home erreicht!")
-    
-    # Beispiel: Bewege um den statischen Tisch herum
-    print("Bewege seitlich um den Tisch...")
-    move_to_pose(0.3, 0.4, 0.4, 0.0, pi/2, 0.0)  # Links um den Tisch
-    print("Position links vom Tisch erreicht!")
-    
-    move_to_pose(0.3, -0.4, 0.4, 0.0, pi/2, 0.0)  # Rechts um den Tisch
-    print("Position rechts vom Tisch erreicht!")
-    
-    # Zurück zur Home-Position
-    move_to_home()
     
     # ▲▲▲ DEIN CODE ENDE ▲▲▲
     

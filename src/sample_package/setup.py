@@ -34,11 +34,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'keyboard_move_sample = sample_package.keyboard_move_sample:main',
-            'test = sample_package.test:main',
-            'roboter_template = sample_package.roboter_template_action:main',
-            'roboter_template_moveitpy = sample_package.roboter_template:main',
-            'student_template = sample_package.student_template:main',
+            'keyboard_move_sample = sample_package.keyboard_move_sample:main'
         ],
     },
 )
