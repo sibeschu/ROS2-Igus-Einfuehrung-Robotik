@@ -160,7 +160,7 @@ class SimpleRobotController(Node):
         max_velocity = np.max(np.abs(self.joint_velocities))
         return max_velocity > VELOCITY_THRESHOLD
     
-    def wait_until_stopped(self, timeout=5.0, stable_time=0.5):
+    def wait_until_stopped(self, timeout=5.0, stable_time=1):
         """
         Wait until robot stops moving and remains stable
         
@@ -172,8 +172,9 @@ class SimpleRobotController(Node):
         start_time = time.time()
         stable_start = None
         
-        # Give controller time to start settling
-        time.sleep(0.3)
+        # First, wait for trajectory to actually complete execution
+        # (MoveIt may return before controller finishes)
+        time.sleep(0.5)
         
         while (time.time() - start_time) < timeout:
             rclpy.spin_once(self, timeout_sec=0.1)
@@ -308,7 +309,7 @@ class SimpleRobotController(Node):
                 self.get_logger().info("Movement successful")
                 
                 # Wait for robot to fully settle after trajectory execution
-                self.wait_until_stopped(timeout=3.0, stable_time=0.3)
+                self.wait_until_stopped(timeout=5.0, stable_time=1.0)
                 
                 return True
             else:
@@ -396,10 +397,9 @@ def wait_for_stop(timeout=3.0):
 def main():
     global _robot
     
-    print("\n" + "═" * 70)
-    print("  SIMPLE IGUS REBEL CONTROL")
-    print("═" * 70 + "\n")
-    
+
+    print("-" * 20 + "SIMPLE IGUS REBEL CONTROL" + "-" * 20)
+  
     rclpy.init()
     
     try:
@@ -429,9 +429,7 @@ def main():
         
         # ═══════════════════════════════════════════════════════════════════
         
-        print("\n" + "═" * 70)
-        print("  PROGRAM COMPLETED")
-        print("═" * 70 + "\n")
+        print("-" * 20 + "  PROGRAM COMPLETED  " + "-" * 20)
         
     except KeyboardInterrupt:
         print("\nStopped by user (Ctrl+C)")
