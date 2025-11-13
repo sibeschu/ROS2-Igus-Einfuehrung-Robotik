@@ -50,15 +50,7 @@ Ausführen mit `ros2 run igus_student student_robot_control`
 ```bash
 src
 ├── sample_package
-│   ├── config
-│   │   └── moveitpy_config.yaml
-│   ├── launch
-│   │   └── roboter_template.launch.py
-│   ├── package.xml
-│   ├── resource
-│   │   └── sample_package
 │   ├── sample_package
-│   │   ├── __init__.py
 │   │   └── keyboard_move_sample.py
 ```
 Mit dem `keyboard_move_sample.py` kann erkundet werden, wie sich der Roboter über /delta_joint_cmd und /delta_twist/cmd steuern lässt.  
