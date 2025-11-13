@@ -160,11 +160,20 @@ class SimpleRobotController(Node):
         max_velocity = np.max(np.abs(self.joint_velocities))
         return max_velocity > VELOCITY_THRESHOLD
     
-    def wait_until_stopped(self, timeout=5.0):
-        """Wait until robot stops moving"""
+    def wait_until_stopped(self, timeout=5.0, stable_time=0.5):
+        """
+        Wait until robot stops moving and remains stable
+        
+        Args:
+            timeout: Maximum time to wait
+            stable_time: How long velocities must be below threshold
+        """
         self.get_logger().info("Waiting for robot to stop")
         start_time = time.time()
-        time.sleep(0.2)
+        stable_start = None
+        
+        # Give controller time to start settling
+        time.sleep(0.3)
         
         while (time.time() - start_time) < timeout:
             rclpy.spin_once(self, timeout_sec=0.1)
@@ -174,13 +183,22 @@ class SimpleRobotController(Node):
                 continue
             
             max_velocity = np.max(np.abs(self.joint_velocities))
-            if max_velocity <= VELOCITY_THRESHOLD:
-                self.get_logger().info("Robot stopped")
-                return True
             
-            time.sleep(0.1)
+            if max_velocity <= VELOCITY_THRESHOLD:
+                # Velocity below threshold
+                if stable_start is None:
+                    stable_start = time.time()
+                elif (time.time() - stable_start) >= stable_time:
+                    # Stable for required duration
+                    self.get_logger().info(f"Robot stopped (stable for {stable_time}s)")
+                    return True
+            else:
+                # Velocity above threshold, reset stability timer
+                stable_start = None
+            
+            time.sleep(0.05)
         
-        self.get_logger().warning("Timeout waiting for robot to stop")
+        self.get_logger().warning(f"Timeout waiting for robot to stop (max vel: {max_velocity:.4f})")
         return False
     
     def move_to(self, x, y, z, roll, pitch, yaw):
@@ -288,6 +306,10 @@ class SimpleRobotController(Node):
             error_code = result.result.error_code.val
             if error_code == 1:
                 self.get_logger().info("Movement successful")
+                
+                # Wait for robot to fully settle after trajectory execution
+                self.wait_until_stopped(timeout=3.0, stable_time=0.3)
+                
                 return True
             else:
                 # MoveIt error codes from moveit_msgs/msg/MoveItErrorCodes
@@ -389,22 +411,19 @@ def main():
         
         print("Starting motion sequence...")
         
-        # Move to home
+        # Move to home - now automatically waits for robot to settle
         move_home()
         print("Reached home position")
-        wait_for_stop()
         
-        # Move to first position
+        # Move to first position - automatically waits
         move_to_pose(0.4, 0.2, 0.3, pi, 0.0, 0.0)
         print("Reached position 1")
-        wait_for_stop()
         
-        # Move to second position
+        # Move to second position - automatically waits
         move_to_pose(0.4, -0.2, 0.3, pi, 0.0, 0.0)
         print("Reached position 2")
-        wait_for_stop()
         
-        # Return home
+        # Return home - automatically waits
         move_home()
         print("Returned home")
         
