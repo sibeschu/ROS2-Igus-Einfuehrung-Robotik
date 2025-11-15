@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <robot
   name="igus_rebel">
-  <!-- file://$(find igus_rebel_description) ===>>> package://igus_rebel_description -->
+  <!-- file://$(find igus_rebel_description) ===>>> package://-->
   <link
     name="base_link">
     <inertial>
@@ -582,7 +582,7 @@
   </link>
   <joint
     name="joint5"
-    type="continuous">
+    type="revolute">
     <origin
       xyz="0 0.0182 0"
       rpy="0 0 0" />
@@ -669,7 +669,7 @@
             <origin
         xyz="-0.00016088 -4.7449E-05 0.021219"
         rpy="0 0 0" />
-            <!-- TODO: CHECK ACTUAL MASS AND INERTIA STATS !! -->
+            <!-- TODO CHECK ACTUAL MASS AND INERTIA STATS !! -->
             <mass
         value="1.2658" />
             <inertia
@@ -705,7 +705,7 @@
     </link>
     <joint
     name="gripper_base_joint"
-    type="revolute">
+    type="fixed">
         <origin
       xyz="0 0 0.0515"
       rpy="0 0 0" />
@@ -730,7 +730,7 @@
             <origin
         xyz="-0.00016088 -4.7449E-05 0.021219"
         rpy="0 0 0" />
-            <!-- TODO: CHECK ACTUAL MASS AND INERTIA STATS !! -->
+            <!-- TODO CHECK ACTUAL MASS AND INERTIA STATS !! -->
             <mass
         value="1.2658" />
             <inertia
@@ -755,14 +755,6 @@
           rgba="0.75294 0.75294 0.75294 1" />
             </material>
         </visual>
-        <collision>
-            <origin
-        xyz="0 0 0.0255"
-        rpy="0 0 0" />
-            <geometry>
-                <cylinder radius="0.04" length="0.05"/>
-            </geometry>
-        </collision>
     </link>
       <joint
     name="gripper_bruecke_joint"
@@ -791,7 +783,7 @@
             <origin
         xyz="-0.00016088 -4.7449E-05 0.021219"
         rpy="0 0 0" />
-            <!-- TODO: CHECK ACTUAL MASS AND INERTIA STATS !! -->
+            <!-- TODO CHECK ACTUAL MASS AND INERTIA STATS !! -->
             <mass
         value="1.2658" />
             <inertia
@@ -818,10 +810,10 @@
         </visual>
         <collision>
             <origin
-        xyz="0 0 0.0255"
+        xyz="0.045 0.09 0.035"
         rpy="0 0 0" />
             <geometry>
-                <cylinder radius="0.04" length="0.05"/>
+                <box size="0.05 0.01 0.05"/>
             </geometry>
         </collision>
     </link>
@@ -831,7 +823,7 @@
             <origin
         xyz="-0.00016088 -4.7449E-05 0.021219"
         rpy="0 0 0" />
-            <!-- TODO: CHECK ACTUAL MASS AND INERTIA STATS !! -->
+            <!-- TODO CHECK ACTUAL MASS AND INERTIA STATS !! -->
             <mass
         value="1.2658" />
             <inertia
@@ -858,10 +850,10 @@
         </visual>
         <collision>
             <origin
-        xyz="0 0 0.0255"
+        xyz="0.045 0.09 0.035"
         rpy="0 0 0" />
             <geometry>
-                <cylinder radius="0.04" length="0.05"/>
+                <box size="0.05 0.01 0.05"/>
             </geometry>
         </collision>
     </link>
