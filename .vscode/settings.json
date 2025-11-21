@@ -1,0 +1,11 @@
+// settings.json
+{
+  // other settings
+  "urdf-visualizer.packages": {
+      "igus_rebel_description": "src/igus_rebel_ros2/src/igus_rebel_description"
+  },
+  "urdf-visualizer.cacheMesh": true,
+  "urdf-visualizer.backgroundColor": "#333333",
+  "urdf-visualizer.renderOnSave": true
+  // other settings
+}

@@ -663,15 +663,16 @@
   </joint>
 
     <!-- GRIPPER -->
+    
     <link
     name="gripper_base">
         <inertial>
             <origin
-        xyz="-0.00016088 -4.7449E-05 0.021219"
+        xyz="0 0 0"
         rpy="0 0 0" />
             <!-- TODO CHECK ACTUAL MASS AND INERTIA STATS !! -->
             <mass
-        value="1.2658" />
+        value="0.500" />
             <inertia
         ixx="0.010763"
         ixy="-2.2861E-07"
@@ -682,11 +683,11 @@
         </inertial>
         <visual>
             <origin
-        xyz="0 0 0"
+        xyz="0.003 -0.007 -0.007"
         rpy="0 0 0" />
             <geometry>
                 <mesh
-          filename="package://igus_rebel_description/meshes/robolink_rebel2/Electronic_Box.stl" scale="0.001 0.001 0.001" />
+          filename="package://igus_rebel_description/meshes/robolink_rebel2/Greifer_Baugruppe.stl" scale="0.001 0.001 0.001" />
             </geometry>
             <material
         name="">
@@ -696,18 +697,19 @@
         </visual>
         <collision>
             <origin
-        xyz="0 0 0.0255"
+        xyz="0 0 -0.023"
         rpy="0 0 0" />
             <geometry>
-                <cylinder radius="0.04" length="0.05"/>
+                <box size="0.1 0.13 0.08"></box>
             </geometry>
         </collision>
     </link>
     <joint
-    name="gripper_base_joint"
+    name="greifer_fixed_joint"
     type="fixed">
+    <!-- origin z = 5 cm von link6 und hälfte der 14 cm greifer -->
         <origin
-      xyz="0 0 0.0515"
+      xyz="0 0 0.12" 
       rpy="0 0 0" />
         <parent
       link="link6" />
@@ -724,68 +726,15 @@
       damping="0.0"
       friction="0.0" />
     </joint>
-     <link
-    name="gripper_bruecke">
-        <inertial>
-            <origin
-        xyz="-0.00016088 -4.7449E-05 0.021219"
-        rpy="0 0 0" />
-            <!-- TODO CHECK ACTUAL MASS AND INERTIA STATS !! -->
-            <mass
-        value="1.2658" />
-            <inertia
-        ixx="0.010763"
-        ixy="-2.2861E-07"
-        ixz="-4.9144E-08"
-        iyy="0.010792"
-        iyz="-2.2502E-08"
-        izz="0.014496" />
-        </inertial>
-        <visual>
-            <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-            <geometry>
-                <mesh
-          filename="package://igus_rebel_description/meshes/robolink_rebel2/Bruecke.stl" scale="0.001 0.001 0.001" />
-            </geometry>
-            <material
-        name="">
-                <color
-          rgba="0.75294 0.75294 0.75294 1" />
-            </material>
-        </visual>
-    </link>
-      <joint
-    name="gripper_bruecke_joint"
-    type="revolute">
-        <origin
-      xyz="-0.0225 -0.0425 0.066"
-      rpy="0 0 0" />
-        <parent
-      link="gripper_base" />
-        <child
-      link="gripper_bruecke" />
-        <axis
-      xyz="0 0 1" />
-        <limit
-      lower="-3.12414"
-      upper="3.12414"
-      effort="330"
-      velocity="2.16" />
-        <dynamics
-      damping="0.0"
-      friction="0.0" />
-    </joint>
-    <link
+   <link
     name="gripper_left">
         <inertial>
             <origin
-        xyz="-0.00016088 -4.7449E-05 0.021219"
+        xyz="0 0 0"
         rpy="0 0 0" />
             <!-- TODO CHECK ACTUAL MASS AND INERTIA STATS !! -->
             <mass
-        value="1.2658" />
+        value="0.050" />
             <inertia
         ixx="0.010763"
         ixy="-2.2861E-07"
@@ -794,77 +743,24 @@
         iyz="-2.2502E-08"
         izz="0.014496" />
         </inertial>
-        <visual>
+        <collision>
             <origin
         xyz="0 0 0"
         rpy="0 0 0" />
             <geometry>
-                <mesh
-          filename="package://igus_rebel_description/meshes/robolink_rebel2/Greiffinger.stl" scale="0.001 0.001 0.001" />
-            </geometry>
-            <material
-        name="">
-                <color
-          rgba="0.75294 0.75294 0.75294 1" />
-            </material>
-        </visual>
-        <collision>
-            <origin
-        xyz="0.045 0.09 0.035"
-        rpy="0 0 0" />
-            <geometry>
-                <box size="0.05 0.01 0.05"/>
-            </geometry>
-        </collision>
-    </link>
-    <link
-    name="gripper_right">
-        <inertial>
-            <origin
-        xyz="-0.00016088 -4.7449E-05 0.021219"
-        rpy="0 0 0" />
-            <!-- TODO CHECK ACTUAL MASS AND INERTIA STATS !! -->
-            <mass
-        value="1.2658" />
-            <inertia
-        ixx="0.010763"
-        ixy="-2.2861E-07"
-        ixz="-4.9144E-08"
-        iyy="0.010792"
-        iyz="-2.2502E-08"
-        izz="0.014496" />
-        </inertial>
-        <visual>
-            <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-            <geometry>
-                <mesh
-          filename="package://igus_rebel_description/meshes/robolink_rebel2/Greiffinger.stl" scale="0.001 0.001 0.001" />
-            </geometry>
-            <material
-        name="">
-                <color
-          rgba="0.75294 0.75294 0.75294 1" />
-            </material>
-        </visual>
-        <collision>
-            <origin
-        xyz="0.045 0.09 0.035"
-        rpy="0 0 0" />
-            <geometry>
-                <box size="0.05 0.01 0.05"/>
+                <box size="0.04 0.01 0.043"></box>
             </geometry>
         </collision>
     </link>
     <joint
-    name="gripper_left_joint"
-    type="revolute">
+    name="gripper_l_joint"
+    type="linear">
+    <!-- origin z = 5 cm von link6 und hälfte der 14 cm greifer -->
         <origin
-      xyz="0.052 -0.01 -0.0155"
-      rpy="0 -1.57 0" />
+      xyz="0 0.02 0.04" 
+      rpy="0 0 0" />
         <parent
-      link="gripper_bruecke" />
+      link="gripper_base" />
         <child
       link="gripper_left" />
         <axis
@@ -878,14 +774,41 @@
       damping="0.0"
       friction="0.0" />
     </joint>
+     <link
+    name="gripper_right">
+        <inertial>
+            <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+            <!-- TODO CHECK ACTUAL MASS AND INERTIA STATS !! -->
+            <mass
+        value="0.050" />
+            <inertia
+        ixx="0.010763"
+        ixy="-2.2861E-07"
+        ixz="-4.9144E-08"
+        iyy="0.010792"
+        iyz="-2.2502E-08"
+        izz="0.014496" />
+        </inertial>
+        <collision>
+            <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+            <geometry>
+                <box size="0.04 0.01 0.043"></box>
+            </geometry>
+        </collision>
+    </link>
     <joint
-    name="gripper_right_joint"
-    type="revolute">
+    name="gripper_r_joint"
+    type="linear">
+    <!-- origin z = 5 cm von link6 und hälfte der 14 cm greifer -->
         <origin
-      xyz="-0.011 0.095 -0.0155"
-      rpy="-3.14 -1.57 0" />
+      xyz="0 -0.02 0.04" 
+      rpy="0 0 0" />
         <parent
-      link="gripper_bruecke" />
+      link="gripper_base" />
         <child
       link="gripper_right" />
         <axis
